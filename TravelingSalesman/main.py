@@ -41,10 +41,6 @@ def rank_routes(routes: list[[int]], luck_factor, cost_table: list[[float]]):
 def calculate_route_cost(route: list[int], cost_table: list[[float]]) -> int:
     home_cost = cost_table[0][route[0]] + cost_table[route[len(route) - 1]][0]
     route_cost = sum(cost_table[route[i]][route[i + 1]] for i in range(0, len(route) - 1))
-
-    #print("home", home_cost)
-    #print("route", route_cost)
-
     return home_cost + route_cost
 
 
