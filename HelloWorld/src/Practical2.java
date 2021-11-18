@@ -4,13 +4,13 @@ import java.util.Random;
 /**
  * Some very basic stuff to get you started. It shows basically how each
  * chromosome is built.
- * 
+ *
  * @author Jo Stevens
  * @version 1.0, 14 Nov 2008
- * 
+ *
  * @author Alard Roebroeck
  * @version 1.1, 12 Dec 2012
- * 
+ *
  */
 
 public class Practical2 {
@@ -27,16 +27,16 @@ public class Practical2 {
 			for (int i = 0; i < popSize/selection.length; i++) {
 				char[] chromosomereplacement = new char[population[0].getChromosome().length];
 				for (int k = 0; k < population[0].getChromosome().length; k++) {
-				int select = generator.nextInt(randomnumberrange);
-				if (select < (randomnumberrange/2)-((randomnumberrange/100)*randompercentage)) {
-					chromosomereplacement[k] = selection[j][k];
-				} 
-				else if (select < (randomnumberrange)-((randomnumberrange/100)*randompercentage)) {
-					chromosomereplacement[k] = selection[0][k];
-				}
-				else {
-					chromosomereplacement[k] = alphabet[generator.nextInt(alphabet.length)];
-				}
+					int select = generator.nextInt(randomnumberrange);
+					if (select < (randomnumberrange/2)-((randomnumberrange/100)*randompercentage)) {
+						chromosomereplacement[k] = selection[j][k];
+					}
+					else if (select < (randomnumberrange)-((randomnumberrange/100)*randompercentage)) {
+						chromosomereplacement[k] = selection[0][k];
+					}
+					else {
+						chromosomereplacement[k] = alphabet[generator.nextInt(alphabet.length)];
+					}
 				}
 				population[(j+1)*i].setChromosome(chromosomereplacement);
 			}
@@ -62,35 +62,36 @@ public class Practical2 {
 		}
 		boolean repeat = true;
 		while (repeat) {
-		for (int i = 0; i < population.length; i++) {
-			for (int j = 0; j < TARGET.length(); j++) {
-				char compare = population[i].genoToPhenotype().charAt(j);
-				char comparetarget = TARGET.charAt(j);
-				if ( compare == comparetarget) {
-					population[i].setFitness(population[i].getFitness() + (1.0/TARGET.length()));
+			for (int i = 0; i < population.length; i++) {
+				for (int j = 0; j < TARGET.length(); j++) {
+					char compare = population[i].genoToPhenotype().charAt(j);
+					char comparetarget = TARGET.charAt(j);
+					if ( compare == comparetarget) {
+						population[i].setFitness(population[i].getFitness() + (1.0/TARGET.length()));
+					}
 				}
 			}
-		}
-		HeapSort.sort(population);
-		for (int i = 0; i < selection.length; i++) {
-			selection[i] = population[i].getChromosome();
-		}
-		// What does your population look like?
-		for (int i = 0; i < population.length; i++) {
-			System.out.println(population[i].genoToPhenotype() +" "+ population[i].getFitness());
+			HeapSort.sort(population);
+
+			for (int i = 0; i < selection.length; i++) {
+				selection[i] = population[i].getChromosome();
+			}
+			// What does your population look like?
+			for (int i = 0; i < population.length; i++) {
+				System.out.println(population[i].genoToPhenotype() +" "+ population[i].getFitness());
+
+			}
+			crossover(generator, population);
+			for (int i = 0; i < population.length; i++) {
+				population[i].setFitness(0.0);
+				if (population[i].genoToPhenotype().equals(TARGET)) {
+					System.out.println(population[i].genoToPhenotype());
+					repeat = false;
+				}
+			}
 
 		}
-		crossover(generator, population);
-		for (int i = 0; i < population.length; i++) {
-			population[i].setFitness(0.0);
-			if (population[i].genoToPhenotype().equals(TARGET)) {
-				System.out.println(population[i].genoToPhenotype());
-				repeat = false;
-			}
-		}
-		
-	}
-	
+
 
 		// do your own cool GA here
 		/**
@@ -109,5 +110,5 @@ public class Practical2 {
 		 * - Check your integers and doubles (eg. don't use ints for double divisions).
 		 */
 	}
-	
+
 }
