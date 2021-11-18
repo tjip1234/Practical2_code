@@ -39,7 +39,13 @@ def rank_routes(routes: list[[int]], luck_factor, cost_table: list[[float]]):
 
 
 def calculate_route_cost(route: list[int], cost_table: list[[float]]) -> int:
-    return cost_table[0][route[0]] + sum(cost_table[route[i]][route[i + 1]] for i in range(1, len(route) - 1))
+    home_cost = cost_table[0][route[0]] + cost_table[route[len(route) - 1]][0]
+    route_cost = sum(cost_table[route[i]][route[i + 1]] for i in range(0, len(route) - 1))
+
+    #print("home", home_cost)
+    #print("route", route_cost)
+
+    return home_cost + route_cost
 
 
 # ToDo can we crossover more then 2 routes? What other crossover types are there?
@@ -66,12 +72,12 @@ def swap_mutation(route: list[int], mutation_rate: float):
 
 
 def main():
-    number_of_cities = 100
+    number_of_cities = 10
     number_of_generations = 1000
     population_size = 1000
-    luck_factor = 0.1
-    survival_rate = 0.2
-    mutation_rate = 0.1
+    luck_factor = 0
+    survival_rate = 0.05
+    mutation_rate = 0.14
 
     debug_count = 100
 
@@ -93,7 +99,7 @@ def main():
 
     rank_routes(routes, 0, cost_table)
     print("final smallest cost:", calculate_route_cost(routes[0], cost_table))
-
+    print(routes[0])
 
 if __name__ == "__main__":
     main()
