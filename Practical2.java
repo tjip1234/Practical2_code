@@ -17,7 +17,7 @@ public class Practical2 {
 
 	static final String TARGET = "HELLO WORLD";
 	static final int popSize = 100;
-	static final int randompercentage = 20;
+	static int randompercentage = 10;
 	static final int randomnumberrange = 1000;
 	static final char[][] selection = new  char[popSize/20][TARGET.length()];
 	static char[] alphabet = new char[27];
@@ -46,6 +46,10 @@ public class Practical2 {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		int countrandomtest = 0;
+		int newcount = 0;
+		int[][] results = new int[10][10];
+		while(countrandomtest < 100){
 		for (char c = 'A'; c <= 'Z'; c++) {
 			alphabet[c - 'A'] = c;
 		}
@@ -61,6 +65,7 @@ public class Practical2 {
 			population[i] = new Individual(tempChromosome);
 		}
 		boolean repeat = true;
+		int count = 0;
 		while (repeat) {
 		for (int i = 0; i < population.length; i++) {
 			for (int j = 0; j < TARGET.length(); j++) {
@@ -88,10 +93,20 @@ public class Practical2 {
 				repeat = false;
 			}
 		}
-		
+		count++;
 	}
-	
-
+	results[countrandomtest/10][newcount] = count;
+	if (newcount == 9) {
+		newcount = 0;
+		countrandomtest++;
+		randompercentage += 2;
+	}
+	else{
+		newcount++;
+		countrandomtest++;
+	}
+	}
+	System.out.println(Arrays.deepToString(results));
 		// do your own cool GA here
 		/**
 		 * Some general programming remarks and hints:
