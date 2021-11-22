@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -15,9 +17,10 @@ import java.util.Random;
 
 public class Practical2 {
 
-	static final String TARGET = "HELLO WORLD";
+	static final String TARGET = "HELLO WORLD HELLO WORLD HELLO WORLD HELLO WORLD HELLO WORLD HELLO WORLD HELLO WORLD HELLO WORLD";
 	static final int popSize = 100;
-	static int randompercentage = 10;
+		// do your own cool GA here
+	static double randompercentage = 0.5;
 	static final int randomnumberrange = 1000;
 	static final char[][] selection = new  char[popSize/20][TARGET.length()];
 	static char[] alphabet = new char[27];
@@ -45,11 +48,7 @@ public class Practical2 {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		int countrandomtest = 0;
-		int newcount = 0;
-		int[][] results = new int[10][10];
-		while(countrandomtest < 100){
+	public static void main(String[] args) throws IOException {
 		for (char c = 'A'; c <= 'Z'; c++) {
 			alphabet[c - 'A'] = c;
 		}
@@ -85,6 +84,7 @@ public class Practical2 {
 			System.out.println(population[i].genoToPhenotype() +" "+ population[i].getFitness());
 
 		}
+		randompercentage = (1.0/population[0].getFitness());
 		crossover(generator, population);
 		for (int i = 0; i < population.length; i++) {
 			population[i].setFitness(0.0);
@@ -94,19 +94,11 @@ public class Practical2 {
 			}
 		}
 		count++;
+		
+		System.out.println(randompercentage);
 	}
-	results[countrandomtest/10][newcount] = count;
-	if (newcount == 9) {
-		newcount = 0;
-		countrandomtest++;
-		randompercentage += 2;
-	}
-	else{
-		newcount++;
-		countrandomtest++;
-	}
-	}
-	System.out.println(Arrays.deepToString(results));
+	System.out.println(count);
+		// do your own cool GA here
 		// do your own cool GA here
 		/**
 		 * Some general programming remarks and hints:

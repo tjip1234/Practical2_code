@@ -68,7 +68,7 @@ def swap_mutation(route: list[int], mutation_rate: float):
 
 
 def main():
-    number_of_cities = 10
+    number_of_cities = 30
     number_of_generations = 1000
     population_size = 1000
     luck_factor = 0
