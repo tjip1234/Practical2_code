@@ -1,7 +1,5 @@
 import random
 import numpy as np
-from scipy import stats
-from python_tsp.exact import solve_tsp_dynamic_programming
 
 np.set_printoptions(precision=3)
 
@@ -98,22 +96,24 @@ def swap_mutation(route: np.ndarray, mutation_rate: float):
 
 
 def main():
-    number_of_cities = 30
-    number_of_generations = 1000
+    number_of_cities = 14
+    number_of_generations = 100
 
-    population_size = 1000
-    luck_factor = 0
-    survival_rate = 0.05
-    mutation_rate = 0.14
+    population_size = 900
+    luck_factor = 0.9
+    survival_rate = 0.1
+    mutation_rate = 0.9
 
-    print_exact_solution = False
+    print_exact_solution = True
     print_distances = False
-    debug_count = 100
+    debug_count = 1
 
     locations = generate_locations(number_of_cities)
     cost_table = construct_euclidean_distance_table(locations)
 
     if print_exact_solution:
+        from python_tsp.exact import solve_tsp_dynamic_programming
+
         permutation, distance = solve_tsp_dynamic_programming(cost_table)
         print("exact solution:", permutation, "  cost:", distance)
 
