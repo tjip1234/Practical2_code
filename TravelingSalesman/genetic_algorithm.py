@@ -98,12 +98,12 @@ def swap_mutation(route: np.ndarray, mutation_rate: float):
 
 def main():
     number_of_cities = 100
-    number_of_generations = 100
+    number_of_generations = 1000
 
     population_size = 300
-    luck_factor = 0.4
-    survival_rate = 0.05
-    mutation_rate = 0.2
+    luck_factor = 0
+    survival_rate = 0.01
+    mutation_rate = 0.05
 
     print_exact_solution = False
     print_distances = False

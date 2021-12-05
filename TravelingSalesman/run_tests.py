@@ -1,12 +1,12 @@
 import copy
 import math
 
-import numpy as np
 import json
 from python_tsp.exact import solve_tsp_dynamic_programming
+
 from genetic_algorithm import *
 
-tests = {}
+hyper_parameter_names = ["Population Size", "Luck Factor", "Survival Rate", "Mutation Rate"]
 
 
 def target_generation_test():
@@ -61,6 +61,9 @@ def target_generation_test():
 
 
 def linear_map(value, minimum, maximum, total_tests):
+    if minimum > maximum:
+        minimum, maximum = maximum, minimum
+
     return minimum + value * ((maximum - minimum)/(total_tests - 1))
 
 
@@ -70,7 +73,7 @@ def unbounded_cost_test():
     cost_table = np.loadtxt(f".\\cost_tables\\{cost_type}_{number_of_cities}.txt")
     print(cost_table)
 
-    maximum_generations = 100
+    maximum_generations = 1000
     tests_per_parameter = 6
 
     print(f"Starting unbounded tests...")
@@ -97,7 +100,7 @@ def unbounded_cost_test():
 
                     min_cost = math.inf
                     for generation in range(maximum_generations):
-                        routes = breed_generation_elitest(routes, luck_factor, survival_rate, mutation_rate, 3, cost_table)
+                        routes = breed_generation_elitest(routes, luck_factor, survival_rate, mutation_rate, ordered_crossover, cost_table)
                         rank_routes(routes, 0, cost_table)
                         cost = calculate_route_cost(routes[0], cost_table)
                         min_cost = cost if cost < min_cost else min_cost
@@ -119,5 +122,53 @@ def unbounded_cost_test():
         json.dump(previous_tests | tests, test_file)
 
 
+def plot_trainings(base_hyper_parameters: (int, float, float, float), variable_parameter_name: str, maximum: float,
+                   number_of_tests: int, number_of_cities, generations):
+
+    cost_table = np.loadtxt(f".\\cost_tables\\euclidean_{number_of_cities}.txt")
+
+    variable_index = hyper_parameter_names.index(variable_parameter_name)
+
+    results = []
+    out = {"base_hyper_parameters": base_hyper_parameters, "variable_parameter_name": variable_parameter_name,
+           "number_of_cities": number_of_cities, "generations": generations, "maximum": maximum, "results": results}
+
+    population_routes = []
+    for test in range(number_of_tests):
+        print(f"Test {test + 1} of {number_of_tests}")
+        current_parameters = list(base_hyper_parameters)
+        current_parameters[variable_index] = linear_map(test, base_hyper_parameters[variable_index], maximum, number_of_tests)
+        population_size, luck_factor, survival_rate, mutation_rate = current_parameters
+
+        if len(population_routes) != population_size:
+            population_routes = generate_random_routes(population_size, number_of_cities)
+
+        routes = copy.deepcopy(population_routes)
+
+        x = list(range(generations))
+        y = []
+        for _ in x:
+            routes = breed_generation_elitest(routes, luck_factor, survival_rate, mutation_rate, ordered_crossover, cost_table)
+            rank_routes(routes, 0, cost_table)
+            cost = calculate_route_cost(routes[0], cost_table)
+            y.append(cost)
+
+        results.append((x, y))
+
+    file_name = f"tests\\training_{variable_parameter_name.lower().replace(' ', '_')}.json"
+    previous_out = {}
+
+    try:
+        with open(file_name, 'r') as test_file:
+            previous_out = json.load(test_file)
+    except:
+        pass
+
+    with open(file_name, 'w') as test_file:
+        json.dump(previous_out | out, test_file)
+
+
 if __name__ == "__main__":
-    unbounded_cost_test()
+    tests = {}
+    #unbounded_cost_test()
+    plot_trainings((100, 0, 0.01, 0), "Survival Rate", 0.1, 5, 100, 1000)
