@@ -171,4 +171,4 @@ def plot_trainings(base_hyper_parameters: (int, float, float, float), variable_p
 if __name__ == "__main__":
     tests = {}
     #unbounded_cost_test()
-    plot_trainings((100, 0, 0.01, 0), "Survival Rate", 0.1, 5, 100, 1000)
+    plot_trainings((100, 0, 0.01, 0), "Mutation Rate", 0.5, 6, 100, 1000)
