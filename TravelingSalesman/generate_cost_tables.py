@@ -1,7 +1,7 @@
 from genetic_algorithm import *
 
 if __name__ == "__main__":
-    number_of_cities = 14
+    number_of_cities = 1000
 
     locations = generate_locations(number_of_cities)
     file_name = f"euclidean_{number_of_cities}"

@@ -1,7 +1,7 @@
 import random
-import numpy as np
+from typing import Callable
 
-np.set_printoptions(precision=3)
+import numpy as np
 
 
 def generate_locations(number_of_nodes: int, environment_size=10) -> list[complex]:
@@ -35,7 +35,7 @@ def breed_generation_ranked(routes: list[np.ndarray], luck_factor: float, surviv
 
 
 def breed_generation_elitest(routes: list[np.ndarray], luck_factor: float, survival_rate: float, mutation_rate: float,
-                             cluster_size: int, cost_table: np.ndarray) -> list[np.ndarray]:
+                             crossover: Callable, cost_table: np.ndarray) -> list[np.ndarray]:
     number_of_routes = len(routes)
     number_of_elites = int(number_of_routes * survival_rate)
 
@@ -43,16 +43,14 @@ def breed_generation_elitest(routes: list[np.ndarray], luck_factor: float, survi
     del routes[number_of_elites:]
 
     for _ in range(number_of_elites, number_of_routes):
-        #new_route = smart_crossover(routes[random.randint(0, number_of_elites - 1)],
-        #                            routes[random.randint(0, number_of_elites - 1)], cluster_size, cost_table)
-        new_route = ordered_crossover(routes[random.randint(0, number_of_elites - 1)], routes[random.randint(0, number_of_elites - 1)])
+        new_route = crossover(routes[random.randint(0, number_of_elites - 1)], routes[random.randint(0, number_of_elites - 1)])
         swap_mutation(new_route, mutation_rate)
         routes.append(new_route)
 
     return routes
 
 
-def rank_routes(routes: list[np.ndarray], luck_factor, cost_table: np.ndarray):
+def rank_routes(routes: list[np.ndarray], luck_factor: float, cost_table: np.ndarray) -> None:
     routes.sort(key=lambda route: calculate_route_cost(route, cost_table) * (1 + random.random() * luck_factor))
 
 
@@ -62,7 +60,6 @@ def calculate_route_cost(route: np.ndarray, cost_table: np.ndarray) -> int:
     return home_cost + route_cost
 
 
-# ToDo can we crossover more then 2 routes? What other crossover types are there?
 def ordered_crossover(first_route: np.ndarray, second_route: np.ndarray) -> np.ndarray:
     subset_start = random.randint(0, len(first_route) - 1)
     subset_end = random.randint(subset_start + 1, len(first_route))
@@ -76,16 +73,20 @@ def ordered_crossover(first_route: np.ndarray, second_route: np.ndarray) -> np.n
     return child
 
 
-def smart_crossover(first_route: np.ndarray, second_route: np.ndarray, cluster_size: int, cost_table: np.ndarray) -> np.ndarray:
+def generate_smart_crossover(cluster_size: int, cost_table: np.ndarray) -> Callable:
 
-    subset = min([first_route[i:i+cluster_size] for i in range(len(first_route) - cluster_size)],
-                 key=lambda cluster: calculate_route_cost(cluster, cost_table))
+    def smart_crossover(first_route: np.ndarray, second_route: np.ndarray) -> np.ndarray:
 
-    child = np.array(list(filter(lambda node: node not in subset, second_route)), dtype=int)
-    crossover_location = random.randint(0, len(child))
-    child = np.concatenate((child[:crossover_location], subset, child[crossover_location:]), dtype=int)
+        subset = min([first_route[i:i+cluster_size] for i in range(len(first_route) - cluster_size)],
+                     key=lambda cluster: calculate_route_cost(cluster, cost_table))
 
-    return child
+        child = np.array(list(filter(lambda node: node not in subset, second_route)), dtype=int)
+        crossover_location = random.randint(0, len(child))
+        child = np.concatenate((child[:crossover_location], subset, child[crossover_location:]), dtype=int)
+
+        return child
+
+    return smart_crossover
 
 
 def swap_mutation(route: np.ndarray, mutation_rate: float):
@@ -96,15 +97,15 @@ def swap_mutation(route: np.ndarray, mutation_rate: float):
 
 
 def main():
-    number_of_cities = 14
+    number_of_cities = 100
     number_of_generations = 100
 
-    population_size = 900
-    luck_factor = 0.9
-    survival_rate = 0.1
-    mutation_rate = 0.9
+    population_size = 300
+    luck_factor = 0.4
+    survival_rate = 0.05
+    mutation_rate = 0.2
 
-    print_exact_solution = True
+    print_exact_solution = False
     print_distances = False
     debug_count = 1
 
@@ -119,14 +120,15 @@ def main():
 
     routes = generate_random_routes(population_size, number_of_cities)
     print("locations", locations)
-    if print_distances: print("distances:\n", cost_table)
-    print("routes:\n", routes)
+    if print_distances:
+        print("distances:\n", cost_table)
+        print("routes:\n", routes)
 
     rank_routes(routes, 0, cost_table)
     print("initial smallest cost:", calculate_route_cost(routes[0], cost_table))
 
     for i in range(number_of_generations):
-        routes = breed_generation_elitest(routes, luck_factor, survival_rate, mutation_rate, 3, cost_table)
+        routes = breed_generation_elitest(routes, luck_factor, survival_rate, mutation_rate, ordered_crossover, cost_table)
         if i % debug_count == 0:
             rank_routes(routes, 0, cost_table)
             print("generation:", i, " smallest cost:", calculate_route_cost(routes[0], cost_table))
@@ -137,4 +139,5 @@ def main():
 
 
 if __name__ == "__main__":
+    np.set_printoptions(precision=3)
     main()
