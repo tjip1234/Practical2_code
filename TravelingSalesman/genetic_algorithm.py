@@ -98,12 +98,12 @@ def swap_mutation(route: np.ndarray, mutation_rate: float):
 
 def main():
     number_of_cities = 100
-    number_of_generations = 1000
+    number_of_generations = 100
 
     population_size = 300
     luck_factor = 0
     survival_rate = 0.01
-    mutation_rate = 0.05
+    mutation_rate = 0
 
     print_exact_solution = False
     print_distances = False
@@ -127,7 +127,7 @@ def main():
     rank_routes(routes, 0, cost_table)
     print("initial smallest cost:", calculate_route_cost(routes[0], cost_table))
 
-    for i in range(number_of_generations):
+    for i in range(number_of_generations): #generate_smart_crossover(50, cost_table)
         routes = breed_generation_elitest(routes, luck_factor, survival_rate, mutation_rate, ordered_crossover, cost_table)
         if i % debug_count == 0:
             rank_routes(routes, 0, cost_table)

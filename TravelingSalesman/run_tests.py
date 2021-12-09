@@ -139,6 +139,7 @@ def plot_trainings(base_hyper_parameters: (int, float, float, float), variable_p
         current_parameters = list(base_hyper_parameters)
         current_parameters[variable_index] = linear_map(test, base_hyper_parameters[variable_index], maximum, number_of_tests)
         population_size, luck_factor, survival_rate, mutation_rate = current_parameters
+        population_size = int(population_size)
 
         if len(population_routes) != population_size:
             population_routes = generate_random_routes(population_size, number_of_cities)
@@ -171,4 +172,6 @@ def plot_trainings(base_hyper_parameters: (int, float, float, float), variable_p
 if __name__ == "__main__":
     tests = {}
     #unbounded_cost_test()
-    plot_trainings((100, 0, 0.01, 0), "Mutation Rate", 0.5, 6, 100, 1000)
+    #plot_trainings((100, 0, 0.01, 0), "Mutation Rate", 0.02, 6, 100, 10000)
+    plot_trainings((100, 0, 0.01, 0), "Luck Factor", 0.02, 6, 100, 10000)
+    #plot_trainings((100, 0, 0.01, 0), "Population Size", 1000, 6, 100, 1000)
