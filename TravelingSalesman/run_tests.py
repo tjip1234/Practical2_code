@@ -169,9 +169,33 @@ def plot_trainings(base_hyper_parameters: (int, float, float, float), variable_p
         json.dump(previous_out | out, test_file)
 
 
+def train_graph(hyper_parameters: (int, float, float, float), number_of_cities, generations):
+    locations = generate_locations(number_of_cities)
+    cost_table = construct_euclidean_distance_table(locations)
+
+    paths = []
+    out = {"hyper_parameters": hyper_parameters, "number_of_cities": number_of_cities, "generations": generations,
+           "locations": [(location.real, location.imag) for location in locations], "paths": paths}
+
+    population_size, luck_factor, survival_rate, mutation_rate = hyper_parameters
+
+    routes = generate_random_routes(population_size, number_of_cities)
+
+    for generation in range(generations):
+        routes = breed_generation_elitest(routes, luck_factor, survival_rate, mutation_rate, ordered_crossover, cost_table)
+        rank_routes(routes, 0, cost_table)
+        paths.append(routes[0].tolist())
+
+    file_name = f"tests\\nodes_{number_of_cities}_{generations}.json"
+
+    with open(file_name, 'w') as test_file:
+        json.dump(out, test_file)
+
+
 if __name__ == "__main__":
     tests = {}
     #unbounded_cost_test()
     #plot_trainings((100, 0, 0.01, 0), "Mutation Rate", 0.02, 6, 100, 10000)
-    plot_trainings((100, 0, 0.01, 0), "Luck Factor", 0.02, 6, 100, 10000)
+    #plot_trainings((100, 0, 0.01, 0), "Luck Factor", 0.02, 6, 100, 10000)
     #plot_trainings((100, 0, 0.01, 0), "Population Size", 1000, 6, 100, 1000)
+    train_graph((100, 0, 0.01, 0), 50, 1000)

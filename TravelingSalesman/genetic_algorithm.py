@@ -4,9 +4,15 @@ from typing import Callable
 import numpy as np
 
 
+def generate_locations_grid(number_of_nodes: int, environment_size=10) -> list[complex]:
+    x = random.sample(range(environment_size), 100)
+    y = random.sample(range(environment_size), 100)
+    print(x)
+    return [complex(x[i], y[i]) for i in range(number_of_nodes)]
+
+
 def generate_locations(number_of_nodes: int, environment_size=10) -> list[complex]:
-    return [complex(random.randint(0, environment_size), random.randint(0, environment_size))
-            for _ in range(number_of_nodes)]
+    return [complex(random.random() * environment_size, random.random() * environment_size) for _ in range(number_of_nodes)]
 
 
 def construct_euclidean_distance_table(node_locations: list[complex]) -> np.ndarray:
@@ -97,7 +103,7 @@ def swap_mutation(route: np.ndarray, mutation_rate: float):
 
 
 def main():
-    number_of_cities = 100
+    number_of_cities = 10
     number_of_generations = 100
 
     population_size = 300
@@ -105,7 +111,7 @@ def main():
     survival_rate = 0.01
     mutation_rate = 0
 
-    print_exact_solution = False
+    print_exact_solution = True
     print_distances = False
     debug_count = 1
 
