@@ -17,10 +17,8 @@ import java.util.Random;
  */
 
 public class Practical2 {
-
 	static String TARGET = "HELLO WORLD";
 	static int popSize = 1365;
-		// do your own cool GA here
 	static double randompercentage = 10;
 	static final int randomnumberrange = 1000;
 	static final char[][] selection = new  char[5][TARGET.length()];
@@ -51,8 +49,7 @@ public class Practical2 {
 	public static void main(String[] args) throws IOException {
 		//fucntion to test the GA 
 		//if you don t want this comment the rest and run 
-		//mainFunction();
-
+		//mainfFunction();
 		int rangeOfStringlength = 10;
 		String[] endresult = new String[rangeOfStringlength];
 		for (int i = 0; i < endresult.length; i++) {
