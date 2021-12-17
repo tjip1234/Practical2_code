@@ -79,10 +79,49 @@ def plot_graph(file_name: str):
         plt.show()
 
 
+def no_crossover(hyper_parameters: (int, float, float, float), number_of_cities, generations):
+    locations = generate_locations(number_of_cities)
+    cost_table = construct_euclidean_distance_table(locations)
+
+    plt.suptitle("Training", fontsize=14)
+    plt.xlabel("Generation", fontsize=12)
+    plt.ylabel("Euclidean Distance (lower is better)", fontsize=12)
+
+    population_size, luck_factor, survival_rate, mutation_rate = hyper_parameters
+
+    routes = generate_random_routes(population_size, number_of_cities)
+    rank_routes(routes, 0, cost_table)
+
+    x = list(range(generations))
+    y = []
+    for generation in range(generations):
+        print("generation: ", generation)
+        #print([calculate_route_cost(route, cost_table) for route in routes])
+        sample_size = int(population_size*survival_rate)
+        routes = routes[:sample_size]
+        routes.extend([copy.deepcopy(random.choice(routes)) for _ in range(population_size-sample_size)])
+        #print([calculate_route_cost(route, cost_table) for route in routes])
+        for route in routes[10:]:
+            swap_mutation(route, mutation_rate)
+        rank_routes(routes, 0, cost_table)
+        #print([calculate_route_cost(route, cost_table) for route in routes])
+        y.append(calculate_route_cost(routes[0], cost_table))
+
+    print(y)
+    plt.plot(x, y)
+
+    file_name = f"tests\\no_crossover_{number_of_cities}_{generations}.png"
+
+    plt.savefig(file_name, dpi=1200)
+
+
+
 if __name__ == "__main__":
 
     #scatter_parameter_cost("Survival Rate", 100, 100)
-    plot_trainings("tests\\training_luck_factor_05.json")
+    #plot_trainings("tests\\training_survival_rate_99.json")
+    no_crossover((100, 0, 0.01, 0.1), 100, 10000)
+
 
 
 

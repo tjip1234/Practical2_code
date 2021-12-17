@@ -22,11 +22,15 @@ def plot_paths(file_name, length_sec=10):
     plt.ylim(-1, 11)
     plt.axis('square')
 
-    def update(path):
+    def update(frame):
+        print(frame)
+        path = paths[frame]
         ax.cla()
 
+        ax.set_title(f"Generation {frame} of {len(paths)}")
+
         for i, (x, y) in enumerate(locations):
-            ax.add_patch(plt.Circle((x, y), 0.2, color='b' if i != 0 else 'r'))
+            ax.add_patch(plt.Circle((x, y), 0.1, color='b' if i != 0 else 'r'))
 
         path.insert(0, 0)
         path.append(0)
@@ -35,10 +39,12 @@ def plot_paths(file_name, length_sec=10):
             x2, y2 = locations[path[i+1]]
             ax.plot((x1, x2), (y1, y2), color='black')
 
-    anim = FuncAnimation(fig, update, frames=paths, interval=length_sec / len(paths) * 1000)
-    anim.save(file_name[:-5] + '.gif', dpi=80, writer='imagemagick')
+    anim = FuncAnimation(fig, update, frames=len(paths), interval=1)
+    print("Saving")
+    anim.save(file_name[:-5] + '.gif', dpi=120, writer='imagemagick')
 
 
 if __name__ == "__main__":
     plot_paths("tests\\nodes_50_1000.json")
+    #plot_paths("tests\\nodes_100_100.json")
     #plot_graphs([[(0, 1), (1, 2), (1, 3)]])

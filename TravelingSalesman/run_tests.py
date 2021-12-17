@@ -1,5 +1,6 @@
 import copy
 import math
+import random
 
 import json
 from python_tsp.exact import solve_tsp_dynamic_programming
@@ -192,10 +193,12 @@ def train_graph(hyper_parameters: (int, float, float, float), number_of_cities, 
         json.dump(out, test_file)
 
 
+
+
 if __name__ == "__main__":
     tests = {}
     #unbounded_cost_test()
     #plot_trainings((100, 0, 0.01, 0), "Mutation Rate", 0.02, 6, 100, 10000)
     #plot_trainings((100, 0, 0.01, 0), "Luck Factor", 0.02, 6, 100, 10000)
     #plot_trainings((100, 0, 0.01, 0), "Population Size", 1000, 6, 100, 1000)
-    train_graph((100, 0, 0.01, 0), 50, 1000)
+    #train_graph((500, 0, 0.01, 0), 1000, 1000)
